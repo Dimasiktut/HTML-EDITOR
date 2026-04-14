@@ -41,7 +41,6 @@ export default function App() {
     <p>Start typing here and see the analysis update in real-time on the right sidebar.</p>
   `);
   const [highlightedWord, setHighlightedWord] = useState<string | null>(null);
-  const [sidebarTab, setSidebarTab] = useState<'insights' | 'chat'>('insights');
 
   const handleDownload = () => {
     const blob = new Blob([html], { type: 'text/html' });
@@ -82,7 +81,7 @@ export default function App() {
           <div className="flex-1 flex flex-col p-6 gap-6 overflow-hidden">
             <Tabs defaultValue="visual" className="flex-1 flex flex-col">
               <div className="flex items-center justify-between mb-4">
-                <TabsList className="grid w-[300px] grid-cols-3">
+                <TabsList className="grid w-[400px] grid-cols-4">
                   <TabsTrigger value="visual" className="gap-2">
                     <FileText className="h-3.5 w-3.5" />
                     Visual
@@ -94,6 +93,10 @@ export default function App() {
                   <TabsTrigger value="preview" className="gap-2">
                     <Eye className="h-3.5 w-3.5" />
                     Preview
+                  </TabsTrigger>
+                  <TabsTrigger value="chat" className="gap-2">
+                    <MessageSquare className="h-3.5 w-3.5" />
+                    AI Chat
                   </TabsTrigger>
                 </TabsList>
                 
@@ -116,65 +119,38 @@ export default function App() {
               <TabsContent value="preview" className="flex-1 mt-0 focus-visible:outline-none">
                 <Preview html={html} />
               </TabsContent>
+
+              <TabsContent value="chat" className="flex-1 mt-0 focus-visible:outline-none">
+                <AIChat />
+              </TabsContent>
             </Tabs>
           </div>
 
           {/* Sidebar */}
           <aside className="w-80 border-l bg-muted/10 flex flex-col overflow-hidden">
-            <div className="p-2 border-b bg-white/50">
-              <div className="grid grid-cols-2 gap-1 bg-muted/50 p-1 rounded-md">
-                <Button 
-                  variant={sidebarTab === 'insights' ? 'secondary' : 'ghost'} 
-                  size="sm" 
-                  className="h-8 text-[11px] gap-2"
-                  onClick={() => setSidebarTab('insights')}
-                >
-                  <Sparkles className="h-3.5 w-3.5" />
-                  Анализ
-                </Button>
-                <Button 
-                  variant={sidebarTab === 'chat' ? 'secondary' : 'ghost'} 
-                  size="sm" 
-                  className="h-8 text-[11px] gap-2"
-                  onClick={() => setSidebarTab('chat')}
-                >
-                  <MessageSquare className="h-3.5 w-3.5" />
-                  AI Чат
-                </Button>
+            <div className="flex flex-col h-full">
+              <div className="p-4 border-b bg-white/50">
+                <div className="flex items-center gap-2 mb-1">
+                  <Sparkles className="h-4 w-4 text-primary" />
+                  <h2 className="font-semibold text-sm">Content Insights</h2>
+                </div>
+                <p className="text-[10px] text-muted-foreground">
+                  Real-time analysis of your writing quality and structure.
+                </p>
               </div>
-            </div>
-            
-            <div className="flex-1 overflow-hidden">
-              {sidebarTab === 'insights' ? (
-                <div className="flex flex-col h-full">
-                  <div className="p-4 border-b bg-white/50">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Sparkles className="h-4 w-4 text-primary" />
-                      <h2 className="font-semibold text-sm">Content Insights</h2>
-                    </div>
-                    <p className="text-[10px] text-muted-foreground">
-                      Real-time analysis of your writing quality and structure.
-                    </p>
-                  </div>
-                  <div className="flex-1 overflow-hidden">
-                    <WordAnalysis html={html} onWordClick={setHighlightedWord} />
-                  </div>
-                  <div className="p-4 border-t bg-white/50">
-                    <div className="flex items-center justify-between text-xs mb-2">
-                      <span className="text-muted-foreground">Word Count</span>
-                      <span className="font-medium">{html.replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">Readability</span>
-                      <span className="font-medium text-green-600">Good</span>
-                    </div>
-                  </div>
+              <div className="flex-1 overflow-hidden">
+                <WordAnalysis html={html} onWordClick={setHighlightedWord} />
+              </div>
+              <div className="p-4 border-t bg-white/50">
+                <div className="flex items-center justify-between text-xs mb-2">
+                  <span className="text-muted-foreground">Word Count</span>
+                  <span className="font-medium">{html.replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length}</span>
                 </div>
-              ) : (
-                <div className="h-full p-4">
-                  <AIChat />
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">Readability</span>
+                  <span className="font-medium text-green-600">Good</span>
                 </div>
-              )}
+              </div>
             </div>
           </aside>
         </main>
