@@ -141,3 +141,45 @@ export async function getImprovementSuggestions(selectedText: string, fullContex
     suggestions: ["API ключи не настроены. Функции улучшения через ИИ недоступны."]
   };
 }
+
+export async function chat(message: string, history: { role: "user" | "assistant", content: string }[]) {
+  // Try DeepSeek
+  if (deepseekKey) {
+    try {
+      const response = await deepseek.chat.completions.create({
+        model: "deepseek-chat",
+        messages: [
+          { role: "system", content: "You are a helpful assistant. Help the user generate descriptions and content." },
+          ...history,
+          { role: "user", content: message }
+        ]
+      });
+      return response.choices[0].message.content || "No response from DeepSeek.";
+    } catch (e) {
+      console.error("DeepSeek Chat Error:", e);
+    }
+  }
+
+  // Try Gemini
+  if (geminiKey) {
+    try {
+      const chatSession = genAI.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: [
+          ...history.map(h => ({ role: h.role === "user" ? "user" : "model", parts: [{ text: h.content }] })),
+          { role: "user", parts: [{ text: message }] }
+        ],
+        config: {
+          systemInstruction: "You are a helpful assistant. Help the user generate descriptions and content."
+        }
+      });
+      const response = await chatSession;
+      return response.text || "No response from Gemini.";
+    } catch (e) {
+      console.error("Gemini Chat Error:", e);
+    }
+  }
+
+  return "API ключи не настроены. Чат недоступен.";
+}
+
