@@ -5,7 +5,8 @@ import Highlight from '@tiptap/extension-highlight';
 import { 
   Heading2, Heading3, Heading4, 
   Bold, Italic, List, ListOrdered, 
-  Undo, Redo, Quote, Code, Sparkles, Loader2, X
+  Undo, Redo, Quote, Code, Sparkles, Loader2, X,
+  Highlighter
 } from 'lucide-react';
 import { Button, buttonVariants } from '@/components/ui/button.tsx';
 import { Separator } from '@/components/ui/separator.tsx';
@@ -81,38 +82,41 @@ export default function Editor({ content, onChange, highlightedWord }: EditorPro
   useEffect(() => {
     if (!editor) return;
     
-    // Clear previous highlights
-    editor.commands.unsetHighlight();
+    // Clear ALL highlights in the document using a transaction
+    const { state, view } = editor;
+    const { tr } = state;
+    let hasHighlights = false;
+
+    state.doc.descendants((node, pos) => {
+      node.marks.forEach(mark => {
+        if (mark.type.name === 'highlight') {
+          tr.removeMark(pos, pos + node.nodeSize, mark.type);
+          hasHighlights = true;
+        }
+      });
+    });
 
     if (highlightedWord) {
-      const { state } = editor;
-      const { doc } = state;
+      const escapedWord = highlightedWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`\\b${escapedWord}\\b`, 'gi');
       
-      // Collect all matches first
-      const matches: { from: number; to: number }[] = [];
-      doc.descendants((node, pos) => {
+      state.doc.descendants((node, pos) => {
         if (node.isText && node.text) {
-          const regex = new RegExp(`\\b${highlightedWord}\\b`, 'gi');
           let match;
           while ((match = regex.exec(node.text)) !== null) {
-            matches.push({
-              from: pos + match.index,
-              to: pos + match.index + match[0].length
-            });
+            tr.addMark(
+              pos + match.index, 
+              pos + match.index + match[0].length, 
+              state.schema.marks.highlight.create({ color: '#fef08a' })
+            );
+            hasHighlights = true;
           }
         }
       });
+    }
 
-      // Apply highlights in a single transaction if possible, or sequentially
-      if (matches.length > 0) {
-        let chain = editor.chain();
-        matches.forEach(m => {
-          chain = chain.setTextSelection({ from: m.from, to: m.to }).setHighlight({ color: '#fef08a' });
-        });
-        // Restore selection to avoid jumping
-        const currentSelection = editor.state.selection;
-        chain.setTextSelection(currentSelection).run();
-      }
+    if (hasHighlights || highlightedWord) {
+      view.dispatch(tr);
     }
   }, [highlightedWord, editor]);
 
@@ -221,6 +225,9 @@ export default function Editor({ content, onChange, highlightedWord }: EditorPro
         </MenuButton>
         <MenuButton onClick={() => editor.chain().focus().toggleItalic().run()} isActive={editor.isActive('italic')} tooltip="Italic">
           <Italic className="h-4 w-4" />
+        </MenuButton>
+        <MenuButton onClick={() => editor.chain().focus().toggleHighlight().run()} isActive={editor.isActive('highlight')} tooltip="Highlight">
+          <Highlighter className="h-4 w-4" />
         </MenuButton>
         <Separator orientation="vertical" className="h-6 mx-1" />
         <MenuButton onClick={() => editor.chain().focus().toggleBulletList().run()} isActive={editor.isActive('bulletList')} tooltip="Bullet List">
