@@ -6,7 +6,7 @@ import {
   Heading2, Heading3, Heading4, 
   Bold, Italic, List, ListOrdered, 
   Undo, Redo, Quote, Code, Sparkles, Loader2, X,
-  Highlighter
+  Highlighter, AlignLeft
 } from 'lucide-react';
 import { Button, buttonVariants } from '@/components/ui/button.tsx';
 import { Separator } from '@/components/ui/separator.tsx';
@@ -15,6 +15,8 @@ import { cn } from '@/lib/utils.ts';
 import { useEffect, useState, useRef } from 'react';
 import { getImprovementSuggestions } from '@/lib/ai.ts';
 import { toast } from 'sonner';
+import prettier from 'prettier/standalone';
+import parserHtml from 'prettier/plugins/html';
 
 interface EditorProps {
   content: string;
@@ -250,6 +252,28 @@ export default function Editor({ content, onChange, highlightedWord }: EditorPro
           </MenuButton>
           <MenuButton onClick={() => editor.chain().focus().redo().run()} tooltip="Redo">
             <Redo className="h-4 w-4" />
+          </MenuButton>
+          <Separator orientation="vertical" className="h-6 mx-1" />
+          <MenuButton 
+            onClick={async () => {
+              const formatted = await prettier.format(editor.getHTML(), {
+                parser: 'html',
+                plugins: [parserHtml],
+                printWidth: 120,
+                tabWidth: 2,
+              });
+              
+              // Collapse <p> tags to be on a single line
+              const collapsed = formatted.replace(/<p>\s*\n\s*([\s\S]*?)\s*\n\s*<\/p>/g, (match, p1) => {
+                return `<p>${p1.trim()}</p>`;
+              });
+              
+              editor.commands.setContent(collapsed);
+              toast.success("Разметка отформатирована");
+            }} 
+            tooltip="Форматировать HTML"
+          >
+            <AlignLeft className="h-4 w-4" />
           </MenuButton>
         </div>
       </div>
