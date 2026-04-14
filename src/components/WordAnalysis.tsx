@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge.tsx';
 import { ScrollArea } from '@/components/ui/scroll-area.tsx';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
-import { getSynonyms } from '@/lib/gemini.ts';
+import { getSynonyms } from '@/lib/ai.ts';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils.ts';
 
@@ -71,7 +71,7 @@ export default function WordAnalysis({ html, onWordClick }: WordAnalysisProps) {
       setSynonyms({ word, list: result.synonyms, explanation: result.explanation });
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      toast.error(`Analysis Error: ${message}`);
+      toast.error(`Ошибка: ${message}`);
       console.error("Synonyms Error:", error);
     } finally {
       setLoadingWord(null);
@@ -129,13 +129,17 @@ export default function WordAnalysis({ html, onWordClick }: WordAnalysisProps) {
                             </div>
                           ) : synonyms && synonyms.word === word ? (
                             <div className="space-y-2">
-                              <div className="flex flex-wrap gap-1">
-                                {synonyms.list.map(s => (
-                                  <Badge key={s} variant="secondary" className="cursor-default">
-                                    {s}
-                                  </Badge>
-                                ))}
-                              </div>
+                              {synonyms.list.length > 0 ? (
+                                <div className="flex flex-wrap gap-1">
+                                  {synonyms.list.map(s => (
+                                    <Badge key={s} variant="secondary" className="cursor-default">
+                                      {s}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-[10px] text-muted-foreground">Синонимы не найдены в локальном словаре.</p>
+                              )}
                               {synonyms.explanation && (
                                 <p className="text-[10px] text-muted-foreground leading-tight italic">
                                   {synonyms.explanation}

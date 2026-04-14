@@ -13,7 +13,7 @@ import { Separator } from '@/components/ui/separator.tsx';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.tsx';
 import { cn } from '@/lib/utils.ts';
 import { useEffect, useState, useRef } from 'react';
-import { getImprovementSuggestions } from '@/lib/gemini.ts';
+import { getImprovementSuggestions } from '@/lib/ai.ts';
 import { toast } from 'sonner';
 
 interface EditorProps {
@@ -137,7 +137,7 @@ export default function Editor({ content, onChange, highlightedWord }: EditorPro
       setAiSuggestions(result.suggestions);
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      toast.error(`AI Error: ${message}`);
+      toast.error(`Ошибка: ${message}`);
       console.error("AI Suggestions Error:", error);
     } finally {
       setAiLoading(false);
