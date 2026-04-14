@@ -8,7 +8,7 @@ const ai = new GoogleGenAI({ apiKey });
 
 export async function getSynonyms(word: string, context: string) {
   if (!process.env.GEMINI_API_KEY) {
-    throw new Error("GEMINI_API_KEY is not set");
+    throw new Error("GEMINI_API_KEY is missing. Please add it in the 'Secrets' panel in AI Studio settings.");
   }
 
   const response = await ai.models.generateContent({
@@ -40,7 +40,7 @@ export async function getSynonyms(word: string, context: string) {
 
 export async function getImprovementSuggestions(selectedText: string, fullContext: string) {
   if (!process.env.GEMINI_API_KEY) {
-    throw new Error("GEMINI_API_KEY is not set");
+    throw new Error("GEMINI_API_KEY is missing. Please add it in the 'Secrets' panel in AI Studio settings.");
   }
 
   const response = await ai.models.generateContent({
