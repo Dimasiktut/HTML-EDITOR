@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Eye, Search, Info } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
+import { cn } from '@/lib/utils.ts';
 
 interface PreviewProps {
   html: string;

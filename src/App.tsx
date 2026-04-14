@@ -15,14 +15,14 @@ import {
   Code as CodeIcon,
   Eye
 } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { TooltipProvider } from '@/components/ui/tooltip';
-import { Toaster } from '@/components/ui/sonner';
-import Editor from '@/components/Editor';
-import CodeEditor from '@/components/CodeEditor';
-import Preview from '@/components/Preview';
-import WordAnalysis from '@/components/WordAnalysis';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { TooltipProvider } from '@/components/ui/tooltip.tsx';
+import { Toaster } from '@/components/ui/sonner.tsx';
+import Editor from '@/components/Editor.tsx';
+import CodeEditor from '@/components/CodeEditor.tsx';
+import Preview from '@/components/Preview.tsx';
+import WordAnalysis from '@/components/WordAnalysis.tsx';
 
 export default function App() {
   const [html, setHtml] = useState<string>(`

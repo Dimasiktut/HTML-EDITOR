@@ -1,13 +1,13 @@
 import { useState, useMemo } from 'react';
 import { BarChart3, RefreshCw, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
-import { Button, buttonVariants } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { getSynonyms } from '@/lib/gemini';
+import { Button, buttonVariants } from '@/components/ui/button.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
+import { ScrollArea } from '@/components/ui/scroll-area.tsx';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
+import { getSynonyms } from '@/lib/gemini.ts';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils.ts';
 
 interface WordAnalysisProps {
   html: string;
