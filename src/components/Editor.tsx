@@ -7,9 +7,9 @@ import {
   Bold, Italic, List, ListOrdered, 
   Undo, Redo, Quote, Code, Sparkles, Loader2, X
 } from 'lucide-react';
-import { Button, buttonVariants } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Button, buttonVariants } from './ui/button';
+import { Separator } from './ui/separator';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { cn } from '@/lib/utils';
 import { useEffect, useState, useRef } from 'react';
 import { getImprovementSuggestions } from '@/lib/gemini';
