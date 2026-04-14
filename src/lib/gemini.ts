@@ -1,6 +1,10 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+const apiKey = process.env.GEMINI_API_KEY || "";
+if (!apiKey) {
+  console.warn("GEMINI_API_KEY is not defined in the environment. AI features will not work.");
+}
+const ai = new GoogleGenAI({ apiKey });
 
 export async function getSynonyms(word: string, context: string) {
   if (!process.env.GEMINI_API_KEY) {

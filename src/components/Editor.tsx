@@ -135,9 +135,10 @@ export default function Editor({ content, onChange, highlightedWord }: EditorPro
     try {
       const result = await getImprovementSuggestions(selectedText, editor.getText());
       setAiSuggestions(result.suggestions);
-    } catch (error) {
-      toast.error("Failed to get AI suggestions");
-      console.error(error);
+    } catch (error: any) {
+      const message = error instanceof Error ? error.message : String(error);
+      toast.error(`AI Error: ${message}`);
+      console.error("AI Suggestions Error:", error);
     } finally {
       setAiLoading(false);
     }

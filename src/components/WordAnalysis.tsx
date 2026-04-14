@@ -69,9 +69,10 @@ export default function WordAnalysis({ html, onWordClick }: WordAnalysisProps) {
     try {
       const result = await getSynonyms(word, text.substring(0, 500));
       setSynonyms({ word, list: result.synonyms, explanation: result.explanation });
-    } catch (error) {
-      toast.error("Failed to get synonyms. Make sure GEMINI_API_KEY is set.");
-      console.error(error);
+    } catch (error: any) {
+      const message = error instanceof Error ? error.message : String(error);
+      toast.error(`Analysis Error: ${message}`);
+      console.error("Synonyms Error:", error);
     } finally {
       setLoadingWord(null);
     }
